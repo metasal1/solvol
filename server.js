@@ -4,9 +4,25 @@ import solvolget from './solvolget.js';
 import solvolput from './solvolput.js';
 import express from 'express';
 import http from 'http';
+import https from 'https';
+import fetch from 'node-fetch';
+import fs from 'fs';
+import cors from 'cors';
 
+const cert = '/etc/letsencrypt/live/cd.milysec.com/cert.pem'
+const key = '/etc/letsencrypt/live/cd.milysec.com/privkey.pem'
+const chain = '/etc/letsencrypt/live/cd.milysec.com/chain.pem'
+const privateKey = fs.readFileSync(key, 'utf8');
+const certificate = fs.readFileSync(cert, 'utf8');
+const ca = fs.readFileSync(chain, 'utf8');
+
+const credentials = { key: privateKey, cert: certificate, ca: ca };
+
+const WAIT = 60000
 const app = express();
-const server = http.createServer(app);
+app.use(cors());
+
+const server = https.createServer(credentials, app)
 const io = new Server(server, { port: 8080, cors: { origin: '*' } });
 const STATIC_KEY = 'salim';
 
@@ -130,7 +146,7 @@ io.on('connection', (socket) => {
     fetchData(socket);
 
     // Set an interval to fetch the data every minute
-    const interval = setInterval(() => fetchData(socket), 60000);
+    const interval = setInterval(() => fetchData(socket), WAIT);
 
     // Clear the interval when the client disconnects
     socket.on('disconnect', () => {
