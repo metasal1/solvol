@@ -23,7 +23,7 @@ const app = express();
 app.use(cors());
 
 const server = https.createServer(credentials, app)
-const io = new Server(server, { port: 8080, cors: { origin: '*' } });
+const io = new Server(server, { cors: { origin: '*' } });
 const STATIC_KEY = 'salim';
 
 const fetchData = async (socket) => {
