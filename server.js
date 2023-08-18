@@ -3,7 +3,6 @@ import config from './config.json' assert { type: "json" };
 import solvolget from './solvolget.js';
 import solvolput from './solvolput.js';
 import express from 'express';
-import http from 'http';
 import https from 'https';
 import fetch from 'node-fetch';
 import fs from 'fs';
@@ -128,7 +127,7 @@ const fetchData = async (socket) => {
     };
     console.log(current);
     socket.emit('data', current);
-    // await solvolput("solana", "solvol", current);
+    await solvolput("solana", "solvol", current);
 };
 
 io.on('connection', (socket) => {
